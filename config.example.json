@@ -1,0 +1,10 @@
+{
+  "server": {
+    "host": "localhost",
+    "port": 8080
+  },
+  "facetracker": {
+    "host": "10.0.1.124",
+    "port": 9090
+  }
+}

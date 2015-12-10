@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<ActionMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Id>db094811-f6bd-4768-b63f-0d22d53242b6</Id>
+  <ActionType>FaceReader_Start_Analyzing</ActionType>
+</ActionMessage>
