@@ -3,17 +3,17 @@ var extend = require('extend');
 var spawn = require( 'child_process' ).spawn;
 var util = require('util');
 
-var PythonTracker = function () {
+var Tracker = function () {
 
     EventEmitter.call(this);
 
     this.tracking = false;
 };
 
-util.inherits(PythonTracker, EventEmitter);
+util.inherits(Tracker, EventEmitter);
 
 
-extend( PythonTracker.prototype, {
+extend( Tracker.prototype, {
 
     handleTrackerOutput: function ( output ) {
         if ( output ) {
@@ -35,10 +35,10 @@ extend( PythonTracker.prototype, {
 
         var spawnArguments = ['./PythonAPI.py'];
 
-        this.pythonTracker = spawn( 'python', spawnArguments );
-        this.pythonTracker.stderr.on('data', this.handleTrackerOutput.bind( this ));
+        this.Tracker = spawn( 'python', spawnArguments );
+        this.Tracker.stderr.on('data', this.handleTrackerOutput.bind( this ));
     }
 });
 
 
-module.exports = PythonTracker;
+module.exports = Tracker;

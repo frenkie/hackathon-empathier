@@ -27,11 +27,11 @@ server.listen( port, '0.0.0.0', function () {
     new EmpathyEngine( io );
 } );
 
-var PythonTracker = require('./PythonTracker' );
-var pythonTracker = new PythonTracker();
+var Tracker = require('./Tracker' );
+var pythonTracker = new Tracker();
 
 pythonTracker.on('data', function ( data ) {
-    console.log( 'jeejj', data );
+    console.log( data );
 });
 
 pythonTracker.start();
