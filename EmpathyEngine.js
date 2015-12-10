@@ -22,9 +22,9 @@ var EmpathyEngine = function ( socket ) {
     this.clients = ['10.0.1.125', '10.0.1.108', '10.0.1.96'];
 
     this.bindSocketEvents();
-    this.bindTrackerEvents();
+   // this.bindTrackerEvents();
 
-    this.tracker.start();
+   // this.tracker.start();
 };
 
 EmpathyEngine.prototype = {
