@@ -26,29 +26,3 @@ server.listen( port, '0.0.0.0', function () {
 
     new EmpathyEngine( io );
 } );
-
-var Tracker = require('./Tracker' );
-var pythonTracker = new Tracker();
-
-pythonTracker.on('data', function ( data ) {
-    console.log( data );
-});
-
-pythonTracker.start();
-
-// TESTING
-
-//var net = require('net');
-//var client = new net.Socket();
-//
-//client.connect( config.facetracker.port, config.facetracker.host, function() {
-//	console.log('Connected to facetracker');
-//});
-//
-//client.on('data', function(data) {
-//	console.log('Received: ' + data);
-//});
-//
-//client.on('close', function() {
-//	console.log('Connection closed');
-//});

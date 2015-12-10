@@ -43,13 +43,13 @@
         recognition.continuous = true;
         recognition.interimResults = true;
         recognition.onresult = function ( event ) {
-            console.log( event )
+            console.log( Date.now(), event );
 
             var interim_transcript = '';
             if ( typeof( event.results) == 'undefined' ) {
-                recognition.onend = null;
-                recognition.stop();
-                upgrade();
+//                recognition.onend = null;
+//                recognition.stop();
+
                 return;
             }
             for ( var i = event.resultIndex; i < event.results.length; ++i ) {
@@ -61,6 +61,14 @@
             }
 
             resultDiv.innerHTML = interim_transcript;
+            if ( interim_transcript ) {
+                socket.emit('tag-update', interim_transcript.split(' ') );
+            }
+        };
+
+        recognition.onend = function () {
+            console.log('speech end?');
+            recognition.start();
         };
 
         recognition.start();

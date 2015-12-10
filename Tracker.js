@@ -17,7 +17,15 @@ extend( Tracker.prototype, {
 
     handleTrackerOutput: function ( output ) {
         if ( output ) {
-            this.emit( 'data', output.toString() );
+
+            try {
+                var jsonString = output.toString().split( 'INFO:root:' )[ 1 ];
+                var json = JSON.parse( jsonString );
+                this.emit( 'data', json );
+
+            } catch ( e ) {
+                console.log('error handling tracker output', e);
+            }
         }
     },
 

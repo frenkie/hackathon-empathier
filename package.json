@@ -10,6 +10,8 @@
     "extend": "^3.0.0",
     "http-server": "^0.8.5",
     "jquery": "^2.1.4",
+    "long": "^3.0.1",
+    "osc": "git+https://github.com/colinbdclark/osc.js.git",
     "q": "^1.4.1"
   }
 }

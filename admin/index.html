@@ -28,7 +28,7 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col">
 
                 <div class="commandos">
 
@@ -42,13 +42,6 @@
 
 
                 </div>
-            </div>
-            <div class="col-sm-6">
-
-                <h2>Framegrabber</h2>
-
-                <canvas id="framegrabber" class="noselect"></canvas>
-
             </div>
         </div>
     </div>
@@ -81,29 +74,6 @@
         /************************************************/
         // TRACKING
 
-
-        // show loading notice
-        frameContext.fillStyle = '#333';
-        frameContext.fillText('Loading...', frameCanvas.width / 2 - 30, frameCanvas.height / 3);
-
-        socket.on('frame', function (data) {
-            // Reference: http://stackoverflow.com/questions/24107378/socket-io-began-to-support-binary-stream-from-1-0-is-there-a-complete-example-e/24124966#24124966
-            var uint8Arr = new Uint8Array(data.buffer);
-            var str = String.fromCharCode.apply(null, uint8Arr);
-            var base64String = btoa(str);
-
-            frameCanvas.width = data.width;
-            frameCanvas.style.width = data.width +'px';
-            frameCanvas.height = data.height;
-            frameCanvas.style.height = data.height +'px';
-
-            frameImg.onload = function () {
-
-                //frameContext.clearRect( 0, 0, frameCanvas.width, frameCanvas.height );
-                frameContext.drawImage(this, 0, 0, frameCanvas.width, frameCanvas.height);
-            };
-            frameImg.src = 'data:image/png;base64,' + base64String;
-        });
 
     });
 
