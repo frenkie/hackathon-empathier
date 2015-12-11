@@ -127,7 +127,7 @@
 
                     item = item.toLowerCase();
 
-                    if ( lastWordStamp[ item ] && (now - lastWordStamp[ item ]) <= 3000 ) {
+                    if ( lastWordStamp[ item ] && (now - lastWordStamp[ item ]) <= 1500 ) {
                         return;
                     }
 
@@ -153,11 +153,13 @@
 
                 filteredWords = filteredWords.split( ' ' );
 
+                //console.log( filteredWords.length );
+
                 if ( filteredWords.length && filteredWords[ 0 ] !== '' ) {
 
                     if ( filteredWords.length > 5 ) {
 
-                        socket.emit( 'tag-update', filteredWords.slice(-3) );
+                        socket.emit( 'tag-update', filteredWords.slice(-5) );
 
                     } else {
                         socket.emit( 'tag-update', filteredWords );
