@@ -1,4 +1,3 @@
-var Tracker = require('./Tracker' );
 var osc = require('osc');
 
 /**
@@ -12,19 +11,15 @@ var EmpathyEngine = function ( socket ) {
     this.reset();
 
     this.socket = socket;
-    this.tracker = new Tracker();
-    //this.oscPort = new osc.UDPPort({
-    //    localAddress: '0.0.0.0', // URL to your server.
-    //    localPort: 57121
-    //});
-    //this.oscPort.open();
+    this.oscPort = new osc.UDPPort({
+        localAddress: '0.0.0.0', // URL to your server.
+        localPort: 57121
+    });
+    this.oscPort.open();
 
     this.clients = ['10.0.1.125', '10.0.1.108', '10.0.1.96'];
 
     this.bindSocketEvents();
-   // this.bindTrackerEvents();
-
- //   this.tracker.start();
 };
 
 EmpathyEngine.prototype = {
@@ -42,10 +37,6 @@ EmpathyEngine.prototype = {
 
     },
 
-    bindTrackerEvents: function () {
-        this.tracker.on('data', this.handleTrackerData.bind( this ));
-    },
-
     handleReset: function () {
         this.reset();
         this.socket.emit('reset-story');
@@ -57,14 +48,6 @@ EmpathyEngine.prototype = {
         this.sendSpeech( tags );
     },
 
-    handleTrackerData: function ( data ) {
-
-        if ( data ) {
-
-            this.sendVisual( data );
-        }
-    },
-
     sendMessageToClients: function ( message ) {
         for ( var i = 0, il = this.clients.length; i < il; i++ ) {
 
@@ -72,40 +55,21 @@ EmpathyEngine.prototype = {
         }
     },
 
-    sendVisual: function ( result ) {
-
-        if ( result && result.Classification ) {
-
-            result.Classification.ClassificationValues.ClassificationValue.forEach(function ( value ) {
-
-                switch ( value.Label ) {
-
-                    default:
-                        if ( value.Value ) {
-                            this.sendMessageToClients({
-                                address: '/live/'+ value.Label.toLowerCase(),
-                                args: parseFloat( value.Value.float )
-                            });
-                        }
-                        break;
-                }
-            }.bind( this ));
-
-        }
-    },
-
     sendSpeech: function ( tags ) {
 
         this.socket.emit( 'tag-update', tags );
 
-        this.sendMessageToClients({
-            address: "/woorden", args: tags
-        });
+        tags.forEach(function ( tag ) {
+
+            this.sendMessageToClients({
+                address: '/woorden', args: tag
+            });
+
+        }.bind(this));
     },
 
     reset: function () {
         console.log('reset story');
-        this.state = {};
     }
 };
 
