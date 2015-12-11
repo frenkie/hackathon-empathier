@@ -24,9 +24,13 @@ def ReceiveMessage(socketConnection):
     remainingLength = totalMessageLength - 8 - messageTypeLength
 
     #read the xml data
-    messageString = socketConnection.recv(remainingLength)
-    #print 'Response message: ' + messageString
-    #print messageString
+    messageString = ''
+
+    if remainingLength > 0:
+        messageString = socketConnection.recv(remainingLength)
+        #print 'Response message: ' + messageString
+        #print messageString
+
     return messageString
 
 
@@ -69,7 +73,7 @@ print 'Socket connected to FaceReader'
 
 ## better practice ##
 client = OSC.OSCClient()
-client.connect( ('10.0.1.82', 8000) ) # note that the argument is a tupple and not two arguments
+client.connect( ('10.0.1.96', 8000) ) # note that the argument is a tupple and not two arguments
 
 
 try:

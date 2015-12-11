@@ -13,18 +13,18 @@ var EmpathyEngine = function ( socket ) {
 
     this.socket = socket;
     this.tracker = new Tracker();
-    this.oscPort = new osc.UDPPort({
-        localAddress: '0.0.0.0', // URL to your server.
-        localPort: 57121
-    });
-    this.oscPort.open();
+    //this.oscPort = new osc.UDPPort({
+    //    localAddress: '0.0.0.0', // URL to your server.
+    //    localPort: 57121
+    //});
+    //this.oscPort.open();
 
     this.clients = ['10.0.1.125', '10.0.1.108', '10.0.1.96'];
 
     this.bindSocketEvents();
    // this.bindTrackerEvents();
 
-   // this.tracker.start();
+ //   this.tracker.start();
 };
 
 EmpathyEngine.prototype = {
