@@ -97,6 +97,7 @@
             }
             for ( var i = event.resultIndex; i < event.results.length; ++i ) {
                 if ( event.results[ i ].isFinal ) {
+
                 } else {
                     interim_transcript += event.results[ i ][ 0 ].transcript;
                 }
@@ -126,23 +127,23 @@
 
                     item = item.toLowerCase();
 
-                    if ( lastWordStamp[ item ] && now - lastWordStamp[ item ] < 1500 ) {
+                    if ( lastWordStamp[ item ] && (now - lastWordStamp[ item ]) <= 3000 ) {
                         return;
                     }
 
-                    lastWordStamp[ item ] = now;
+                    lastWordStamp[ item ] = Date.now();
                     filteredWords.push( item );
                 }
             });
 
-            if ( filteredWords.length == 0 || now - lastSend < 500 ) {
+            if ( filteredWords.length == 0 ) {
                 return;
             }
             lastSend = now;
 
             filteredWords = filteredWords.join(' ');
 
-            if ( filteredWords.indexOf( lastSpeech ) > -1 ) {
+            if ( lastSpeech !== '' && filteredWords.indexOf( lastSpeech ) > -1 ) {
                 filteredWords = filteredWords.replace( lastSpeech, '' );
             }
             filteredWords = filteredWords.trim();
@@ -154,7 +155,7 @@
 
                 if ( filteredWords.length && filteredWords[ 0 ] !== '' ) {
 
-                    if ( filteredWords.length > 3 ) {
+                    if ( filteredWords.length > 5 ) {
 
                         socket.emit( 'tag-update', filteredWords.slice(-3) );
 
