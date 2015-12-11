@@ -18,6 +18,7 @@ app.use( vendorRouter );
 app.use( adminRouter );
 app.use( speechRouter );
 
+
     // binding to 0.0.0.0 allows connections from any other computer in the network
     // to your ip address
 server.listen( port, '0.0.0.0', function () {

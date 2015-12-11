@@ -43,29 +43,27 @@ EmpathyEngine.prototype = {
     },
 
     handleTagUpdate: function ( tags ) {
-
-        console.log( tags );
         this.sendSpeech( tags );
     },
 
     sendMessageToClients: function ( message ) {
         for ( var i = 0, il = this.clients.length; i < il; i++ ) {
-
-            this.oscPort.send( message, this.clients[ i ], 8000 );
+            try {
+                this.oscPort.send( message, this.clients[ i ], 8000 );
+            } catch (e) {
+                console.log( e );
+            }
         }
     },
 
     sendSpeech: function ( tags ) {
 
+        console.log( tags );
         this.socket.emit( 'tag-update', tags );
 
-        tags.forEach(function ( tag ) {
-
-            this.sendMessageToClients({
-                address: '/woorden', args: tag
-            });
-
-        }.bind(this));
+        this.sendMessageToClients({
+            address: '/woorden', args: tags
+        });
     },
 
     reset: function () {

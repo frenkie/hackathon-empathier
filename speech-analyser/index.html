@@ -29,51 +29,164 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
 
-    $( function () {
+ //   $( function () {
 
         var socket = io( document.location.origin );
 
+        window.Timer = function ( duration ) {
+            this.duration = duration;
+            this.active = false;
+        };
+
+        Timer.prototype = {
+
+            checkTimer: function ( resolve, reject ) {
+
+                var difference = this.duration - (Date.now() - this.startTime);
+                var to;
+                if ( this.active ) {
+                    if ( difference <= 0 ) {
+                        resolve();
+                    } else {
+                        if ( difference > 500 ) {
+                            to = Math.floor( difference / 2 );
+                        } else {
+                            to = difference;
+                        }
+                        this.timeOut = setTimeout( function () {
+                            this.checkTimer( resolve, reject );
+                        }.bind( this ), to );
+                    }
+                } else if ( this.timeout ) {
+                    clearTimeout( this.timeOut );
+                }
+            },
+
+            start: function () {
+                this.active = true;
+                this.promise = new Promise( function ( resolve, reject ) {
+
+                    this.startTime = Date.now();
+                    this.checkTimer( resolve, reject );
+
+                }.bind( this ));
+
+                return this.promise;
+            },
+
+            stop: function () {
+                this.active = false;
+                if ( this.timeout ) {
+                    clearTimeout( this.timeOut );
+                }
+            }
+        };
 
         /************************************************/
         // TRACKING
 
         var resultDiv = document.querySelector( '.result' );
-        var final_transcript = '';
         var recognition = new webkitSpeechRecognition();
+
         recognition.continuous = true;
         recognition.interimResults = true;
+        recognition.lang = 'nl_NL';
         recognition.onresult = function ( event ) {
-            console.log( Date.now(), event );
 
             var interim_transcript = '';
             if ( typeof( event.results) == 'undefined' ) {
-//                recognition.onend = null;
-//                recognition.stop();
-
                 return;
             }
             for ( var i = event.resultIndex; i < event.results.length; ++i ) {
                 if ( event.results[ i ].isFinal ) {
-                    final_transcript += event.results[ i ][ 0 ].transcript;
                 } else {
                     interim_transcript += event.results[ i ][ 0 ].transcript;
                 }
             }
 
             resultDiv.innerHTML = interim_transcript;
-            if ( interim_transcript ) {
-                socket.emit('tag-update', interim_transcript.split(' ') );
+
+            speechParser( interim_transcript );
+        };
+
+
+
+        var lastSpeech = '';
+        var lastSend = Date.now();
+        var lastWordStamp = {};
+
+        function speechParser ( speech ) {
+
+            var now = Date.now();
+            var filteredWords = [];
+
+            if ( now - lastSend < 500 ) {
+                return;
             }
+            lastSend = now;
+
+            speech = speech.trim();
+            speech = speech.replace(/\b\w{1,3}\b/ig, '');
+
+            speech.split(' ').forEach(function ( item ) {
+                if ( item !== '' ) {
+                    if ( lastWordStamp[ item ] && lastWordStamp[ item ] < 1000 ) {
+                        return;
+                    }
+
+                    lastWordStamp[ item ] = now;
+                    filteredWords.push( item );
+                }
+            });
+
+
+            if ( filteredWords.length == 0 ) {
+                return;
+            }
+
+            filteredWords = filteredWords.join(' ');
+
+            if ( filteredWords.indexOf( lastSpeech ) > -1 ) {
+                filteredWords = filteredWords.replace( lastSpeech, '' );
+            }
+            filteredWords = filteredWords.trim();
+
+            if ( filteredWords !== '' ) {
+                lastSpeech = filteredWords;
+
+                filteredWords = filteredWords.split( ' ' );
+
+                if ( filteredWords.length && filteredWords[ 0 ] !== '' ) {
+
+                    if ( filteredWords.length > 3 ) {
+
+                        socket.emit( 'tag-update', filteredWords.slice(-3) );
+
+                    } else {
+                        socket.emit( 'tag-update', filteredWords );
+                    }
+                }
+            }
+        }
+
+        var co;
+        var createTimer = function () {
+            co = new Timer(40000);
+            co.start().then(function () {
+                console.log('reloading page');
+                document.location.reload();
+            });
         };
 
         recognition.onend = function () {
-            console.log('speech end?');
-            recognition.start();
+            console.log('timeout?');
+            document.location.reload();
         };
 
         recognition.start();
+        createTimer();
 
-    } );
+ //   } );
 
 </script>
 </body>
